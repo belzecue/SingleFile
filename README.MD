@@ -9,10 +9,12 @@ SingleFile is a Web Extension compatible with Chrome, Firefox (Desktop and Mobil
  - [SingleFileZ](#singlefilez)
  - [Release notes](#release-notes)
  - [FAQ](#faq)
- - [Statistics (Firefox)](#statistics-firefox)
- - [Command Line Interface](#command-line-interface)
+ - [File format comparison](#file-format-comparison)
  - [Known issues](#known-issues)
  - [Troubleshooting unknown issues](#troubleshooting-unknown-issues)
+ - [Statistics (Firefox)](#statistics-firefox)
+ - [Command Line Interface](#command-line-interface)
+ - [Integration with WebKit](#integration-with-webkit)
  - [Privacy policy](#privacy-policy)
  - [Contributors](#contributors)
  - [Icons](#icons)
@@ -62,14 +64,27 @@ More info here: https://github.com/gildas-lormeau/SingleFileZ
 See https://addons.mozilla.org/firefox/addon/single-file/versions/
 
 ## FAQ
-See https://github.com/gildas-lormeau/SingleFile/blob/master/faq.md
+See https://github.com/gildas-lormeau/SingleFile/blob/master/faq.md4
 
-## Statistics (Firefox)
-See https://addons.mozilla.org/firefox/addon/single-file/statistics/?last=90
+## File format comparison
+|   	                                                                           | SingleFile  | SingleFileZ | MAFF  | MHTML | Webarchive | HTML+folder |
+| ---                                	                                          |    :---:    |    :---:    | :---: | :---: |    :---:    |    :---:    |
+| Pages are saved as a single file                                              | ✓ 	         | ✓ 	         | ✓     | ✓     | ✓           	|   	         | 
+| HTML and styles are minified                                                  | ✓           | ✓ 	         |       |       |            	|   	         |
+| Unused HTML and styles are removed from files                                 | ✓           | ✓ 	         |       |       |            	|   	         |
+| Binary resources are not encoded in base 64                                   |             | ✓ 	         | ✓     |       | ✓          	| ✓ 	         |
+| Files are compressed                                                          |             | ✓ 	         | ✓     |       |            	|   	         |
+| Files can be viewed without installing any extension                          | ✓           | ✓*          |       | ✓**   | ✓***       	| ✓           |
+| Files can be viewed without running JavaScript                                | ✓           |   	         | ✓     | ✓     | ✓          	| ✓ 	         |
+| Files can be unzipped to extract resources                                    |             | ✓ 	         | ✓     |       |            	|   	         |
+| Files contains the text of the page (plain or formatted) which can be indexed | ✓ 	         | ✓****       |       | ✓    	| ✓ 	| ✓ 	         |
 
-## Command Line Interface
- - You can save web pages to HTML from the command line interface. See here for more info: https://github.com/gildas-lormeau/SingleFile/blob/master/cli/README.MD.
- - You can also convert MAFF pages to HTML. For this, you must use specific versions of SingleFile CLI and Firefox. See here for more info: https://github.com/gildas-lormeau/SingleFile-MAFF2HTML.
+|       | Notes                                                                                           |
+| :---: | ---                                                                                             |
+| *     | a switch must be passed from the command line in Chrome and an option must be enabled in Safari |
+| **    | only in Chromium-based browsers and Internet Explorer                                           |
+| ***   | only in Safari                                                                                  |
+| \****  | an option must be enabled in the extension                                                      |
 
 ## Known Issues
 - All browsers:
@@ -93,6 +108,16 @@ Please follow these steps if you find an unknown issue:
 - If there is a conflict then try to determine against which extension(s).
 - Please report the issue with a short description on how to reproduce it here: https://github.com/gildas-lormeau/SingleFile/issues.
 
+## Statistics (Firefox)
+See https://addons.mozilla.org/firefox/addon/single-file/statistics/?last=90
+
+## Command Line Interface
+ - You can save web pages to HTML from the command line interface. See here for more info: https://github.com/gildas-lormeau/SingleFile/blob/master/cli/README.MD.
+ - You can also convert MAFF pages to HTML. For this, you must use specific versions of SingleFile CLI and Firefox. See here for more info: https://github.com/gildas-lormeau/SingleFile-MAFF2HTML.
+ 
+## Integration with WebKit
+ - Here is a Swift application (for macOS) made by [@captaindavepdx](https://github.com/captaindavepdx) that illustrates how to use SingleFile with WebKit: https://github.com/captaindavepdx/SingleFileMacOS
+
 ## Privacy Policy
 See https://github.com/gildas-lormeau/SingleFile/blob/master/privacy.md
 
@@ -103,6 +128,7 @@ See https://github.com/gildas-lormeau/SingleFile/blob/master/privacy.md
 - Japanese translation done by Shitennouji（四天王寺) (https://github.com/Shitennouji)
 - Polish translation done by xesarni (https://github.com/xesarni)
 - Russian translation done by rstp14 (https://github.com/rstp14)
+- Spanish translation done by strel (https://github.com/strel)
 
 ## Code derived from third party projects
 - csstree: https://github.com/csstree/csstree

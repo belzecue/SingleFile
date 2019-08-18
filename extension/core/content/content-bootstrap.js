@@ -28,6 +28,7 @@ this.singlefile.extension.core.content.bootstrap = this.singlefile.extension.cor
 	const singlefile = this.singlefile;
 
 	let unloadListenerAdded, options, autoSaveEnabled, autoSaveTimeout, autoSavingPage, pageAutoSaved;
+	singlefile.extension.core.content.updatedResources = {};
 	browser.runtime.sendMessage({ method: "autosave.init" }).then(message => {
 		options = message.options;
 		autoSaveEnabled = message.autoSaveEnabled;
@@ -57,6 +58,9 @@ this.singlefile.extension.core.content.bootstrap = this.singlefile.extension.cor
 			autoSaveEnabled = message.autoSaveEnabled;
 			refresh();
 		}
+		if (message.method == "devtools.resourceCommitted") {
+			singlefile.extension.core.content.updatedResources[message.url] = { content: message.content, type: message.type, encoding: message.encoding };
+		}
 	}
 
 	async function autoSavePage() {
@@ -70,24 +74,10 @@ this.singlefile.extension.core.content.bootstrap = this.singlefile.extension.cor
 				const docData = helper.preProcessDoc(document, window, options);
 				let frames = [];
 				autoSaveTimeout = null;
-				if (!options.removeFrames && singlefile.lib.frameTree.content.frames) {
+				if (!options.removeFrames && singlefile.lib.frameTree.content.frames && window.frames && window.frames.length) {
 					frames = await singlefile.lib.frameTree.content.frames.getAsync(options);
 				}
-				browser.runtime.sendMessage({
-					method: "autosave.save",
-					content: helper.serialize(document, false),
-					canvases: docData.canvases,
-					fonts: docData.fonts,
-					stylesheets: docData.stylesheets,
-					images: docData.images,
-					posters: docData.posters,
-					usedFonts: docData.usedFonts,
-					shadowRoots: docData.shadowRoots,
-					imports: docData.imports,
-					referrer: docData.referrer,
-					frames: frames,
-					url: location.href
-				});
+				savePage(docData, frames);
 				helper.postProcessDoc(document, docData.markedElements);
 				pageAutoSaved = true;
 				autoSavingPage = false;
@@ -114,25 +104,33 @@ this.singlefile.extension.core.content.bootstrap = this.singlefile.extension.cor
 		if (!pageAutoSaved || options.autoSaveUnload) {
 			const docData = helper.preProcessDoc(document, window, options);
 			let frames = [];
-			if (!options.removeFrames && singlefile.lib.frameTree.content.frames) {
+			if (!options.removeFrames && singlefile.lib.frameTree.content.frames && window.frames && window.frames.length) {
 				frames = singlefile.lib.frameTree.content.frames.getSync(options);
 			}
-			browser.runtime.sendMessage({
-				method: "autosave.save",
-				content: helper.serialize(document),
-				canvases: docData.canvases,
-				fonts: docData.fonts,
-				stylesheets: docData.stylesheets,
-				images: docData.images,
-				posters: docData.posters,
-				usedFonts: docData.usedFonts,
-				shadowRoots: docData.shadowRoots,
-				imports: docData.imports,
-				referrer: docData.referrer,
-				frames: frames,
-				url: location.href
-			});
+			savePage(docData, frames);
 		}
+	}
+
+	function savePage(docData, frames) {
+		const helper = singlefile.lib.helper;
+		const updatedResources = singlefile.extension.core.content.updatedResources;
+		Object.keys(updatedResources).forEach(url => updatedResources[url].retrieved = false);
+		browser.runtime.sendMessage({
+			method: "autosave.save",
+			content: helper.serialize(document),
+			canvases: docData.canvases,
+			fonts: docData.fonts,
+			stylesheets: docData.stylesheets,
+			images: docData.images,
+			posters: docData.posters,
+			usedFonts: docData.usedFonts,
+			shadowRoots: docData.shadowRoots,
+			imports: docData.imports,
+			referrer: docData.referrer,
+			frames: frames,
+			url: location.href,
+			updatedResources
+		});
 	}
 
 })();

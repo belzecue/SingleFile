@@ -42,8 +42,10 @@ singlefile.extension.core.bg.config = (() => {
 		loadDeferredImages: true,
 		loadDeferredImagesMaxIdleTime: 1500,
 		loadDeferredImagesBlockCookies: true,
+		loadDeferredImagesBlockStorage: false,
 		filenameTemplate: "{page-title} ({date-iso} {time-locale}).html",
 		infobarTemplate: "",
+		includeInfobar: false,
 		confirmInfobarContent: false,
 		confirmFilename: false,
 		filenameConflictAction: "uniquify",
@@ -73,9 +75,7 @@ singlefile.extension.core.bg.config = (() => {
 		removeAlternativeImages: true,
 		groupDuplicateImages: true,
 		saveRawPage: false,
-		saveToClipboard: false,
-		referrerPolicy: "origin-when-cross-origin",
-		credentials: "include"
+		saveToClipboard: false
 	};
 
 	let pendingUpgradePromise = upgrade();

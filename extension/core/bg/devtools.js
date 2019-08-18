@@ -21,35 +21,20 @@
  *   Source.
  */
 
-this.singlefile = this.singlefile || {
-	extension: {
-		core: {
-			common: {},
-			bg: {},
-			content: {}
-		},
-		ui: {
-			bg: {},
-			content: {}
+/* global singlefile */
+
+singlefile.extension.core.bg.devtools = (() => {
+
+	return {
+		onMessage
+	};
+
+	async function onMessage(message) {
+		if (message.method.endsWith(".resourceCommitted")) {
+			if (message.tabId && message.url && (message.type == "stylesheet" || message.type == "script")) {
+				await singlefile.extension.core.bg.tabs.sendMessage(message.tabId, message);
+			}
 		}
-	},
-	lib: {
-		fetch: {
-			bg: {},
-			content: {}
-		},
-		frameTree: {
-			bg: {},
-			content: {}
-		},
-		hooks: {
-			content: {}
-		},
-		lazy: {
-			bg: {},
-			content: {}
-		},
-		vendor: {},
-		modules: {}
 	}
-};
+
+})();
